@@ -21,7 +21,8 @@ class SecurityConfig {
             .csrf { csrf -> csrf.disable() } // cross-site forgery
             .authorizeHttpRequests { auth -> auth
                 .requestMatchers("/rutas_protegidas/**").authenticated()
-                .requestMatchers("/secretos_extra_confidenciales/**").authenticated()
+                .requestMatchers("/secretos_extra_confidenciales/ficha1").authenticated()
+                .requestMatchers("/secretos_extra_confidenciales/ficha2").permitAll()
                 .requestMatchers("/rutas_publicas/**").permitAll()
             } // Los recursos protegidos y publicos
             .sessionManagement { session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)}

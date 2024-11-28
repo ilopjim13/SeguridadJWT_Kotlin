@@ -14,4 +14,9 @@ class SecretosExtraConfidencialesControlles {
         return "HEHE"
     }
 
+    @GetMapping("/ficha2")
+    fun getSecretos2():String {
+        return "HEHE PUBLICO"
+    }
+
 }
