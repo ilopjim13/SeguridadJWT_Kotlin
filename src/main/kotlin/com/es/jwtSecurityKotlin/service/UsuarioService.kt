@@ -3,6 +3,8 @@ package com.es.jwtSecurityKotlin.service
 import com.es.jwtSecurityKotlin.model.Usuario
 import com.es.jwtSecurityKotlin.repository.UsuarioRepository
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.security.core.GrantedAuthority
+import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.userdetails.User
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.core.userdetails.UserDetailsService
@@ -20,10 +22,16 @@ class UsuarioService :UserDetailsService {
      */
     override fun loadUserByUsername(username: String?): UserDetails {
         val usuario = usuarioRepository.findByUsername(username!!).orElseThrow()
+
+        val todoRoles = usuario.roles?.split(",")
+
+        val roles : List<GrantedAuthority> = todoRoles?.map { rol -> SimpleGrantedAuthority(rol) }?.toList() ?: listOf()
+        print(roles)
+
         return User.builder()
             .username(usuario.username)
             .password(usuario.password)
-            .roles(usuario.roles)
+            .authorities(roles)
             .build()
     }
 

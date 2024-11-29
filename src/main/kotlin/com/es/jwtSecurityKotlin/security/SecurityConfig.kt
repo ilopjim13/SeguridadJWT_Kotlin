@@ -2,6 +2,7 @@ package com.es.jwtSecurityKotlin.security
 
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.http.HttpMethod
 import org.springframework.security.config.Customizer
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
@@ -20,7 +21,9 @@ class SecurityConfig {
         return http
             .csrf { csrf -> csrf.disable() } // cross-site forgery
             .authorizeHttpRequests { auth -> auth
-                .requestMatchers("/rutas_protegidas/**").authenticated()
+                .requestMatchers("/rutas_protegidas/recurso1").permitAll()
+                .requestMatchers("/rutas_protegidas/recurso2/{id}").hasAuthority("ADMIN")
+                .requestMatchers(HttpMethod.DELETE,"/rutas_protegidas/recurso2/{id}").authenticated()
                 .requestMatchers("/secretos_extra_confidenciales/ficha1").authenticated()
                 .requestMatchers("/secretos_extra_confidenciales/ficha2").permitAll()
                 .requestMatchers("/rutas_publicas/**").permitAll()
