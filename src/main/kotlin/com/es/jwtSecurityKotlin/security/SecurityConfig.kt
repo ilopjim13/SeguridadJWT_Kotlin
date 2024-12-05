@@ -38,13 +38,14 @@ class SecurityConfig {
             .csrf { csrf -> csrf.disable() } // cross-site forgery
             .authorizeHttpRequests { auth -> auth
                 .requestMatchers("/usuarios/login").permitAll()
-                .requestMatchers("/rutas_protegidas/recurso1").permitAll()
-                .requestMatchers("/rutas_protegidas/recurso2/{id}").hasAuthority("ADMIN")
-                .requestMatchers(HttpMethod.DELETE,"/rutas_protegidas/recurso2/{id}").authenticated()
-                .requestMatchers("/secretos_extra_confidenciales/ficha1").authenticated()
-                .requestMatchers("/secretos_extra_confidenciales/ficha2").permitAll()
+                .requestMatchers("/rutas_protegidas/recurso2").permitAll()
+                .requestMatchers(HttpMethod.GET,"/rutas_protegidas/recurso/{id}").permitAll()
+                .requestMatchers("/rutas_protegidas/recurso1").authenticated()
+                .requestMatchers(HttpMethod.DELETE,"/rutas_protegidas/recurso/{id}").hasRole("ADMIN")
                 .requestMatchers("/rutas_publicas/**").permitAll()
+                .anyRequest().authenticated()
             } // Los recursos protegidos y publicos
+            .oauth2ResourceServer {oauth2 -> oauth2.jwt(Customizer.withDefaults())}
             .sessionManagement { session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)}
             .httpBasic(Customizer.withDefaults())
             .build()

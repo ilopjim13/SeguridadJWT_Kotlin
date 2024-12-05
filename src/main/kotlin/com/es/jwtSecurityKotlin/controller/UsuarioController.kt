@@ -1,6 +1,7 @@
 package com.es.jwtSecurityKotlin.controller
 
 import com.es.jwtSecurityKotlin.model.Usuario
+import com.es.jwtSecurityKotlin.service.TokenService
 import com.es.jwtSecurityKotlin.service.UsuarioService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
@@ -21,8 +22,12 @@ class UsuarioController {
 
     @Autowired
     private lateinit var usuarioService: UsuarioService
+
     @Autowired
     private lateinit var authenticationManager: AuthenticationManager
+
+    @Autowired
+    private lateinit var tokenService: TokenService
 
     /*
     MÉTODO PARA INSERTAR UN USUARIO
@@ -59,10 +64,12 @@ class UsuarioController {
             return ResponseEntity(mapOf("Mensaje" to "Crendenciales incorrectas dude"), HttpStatus.UNAUTHORIZED)
         }
 
+        // SI PASAMOS LA AUTENTICACIÓN, SIGNIFICA QUE ESTAMOS BIEN AUTENTICADOS
+        // PASAMOS A GENERAR EL TOKEN
+        var token = ""
+        token = tokenService.generateToken(authentication)
 
-        println(authentication)
-
-        return null
+        return ResponseEntity(mapOf("token" to token), HttpStatus.CREATED)
 
     }
 

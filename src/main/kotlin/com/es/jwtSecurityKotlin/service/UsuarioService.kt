@@ -3,6 +3,7 @@ package com.es.jwtSecurityKotlin.service
 import com.es.jwtSecurityKotlin.model.Usuario
 import com.es.jwtSecurityKotlin.repository.UsuarioRepository
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.security.core.Authentication
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.userdetails.User
@@ -25,13 +26,13 @@ class UsuarioService :UserDetailsService {
 
         val todoRoles = usuario.roles?.split(",")
 
-        val roles : List<GrantedAuthority> = todoRoles?.map { rol -> SimpleGrantedAuthority(rol) }?.toList() ?: listOf()
-        print(roles)
+        //val roles : List<GrantedAuthority> = todoRoles?.map { rol -> SimpleGrantedAuthority(rol) }?.toList() ?: listOf()
+        //print(roles)
 
         return User.builder()
             .username(usuario.username)
             .password(usuario.password)
-            .authorities(roles)
+            .roles(usuario.roles)
             .build()
     }
 
@@ -61,6 +62,13 @@ class UsuarioService :UserDetailsService {
         // Devolvemos el Usuario insertado en la BDD
         return null // Cambiar null por el usuario
 
+    }
+
+    fun checkUserOrAdmin(authentication: Authentication, nombre:String):Boolean {
+        authentication.authorities.forEach {
+            return it.authority == "SCOPE_ROLE_ADMIN" || authentication.name == nombre
+        }
+        return false
     }
 
 }
